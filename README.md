@@ -19,6 +19,33 @@ Personal skills for Codex and Claude Code.
 npx skills add AlexVanderbist/skills -g -a codex claude-code
 ```
 
+## Workflow
+
+Coding conventions apply during implementation and review. Existing project instructions take precedence over the shared defaults.
+
+These skills assume the project has appropriate tooling and CI automation for code style, static analysis, and architecture checks. Anything that can be checked or validated reliably by tooling belongs in that tooling and CI configuration, not in an AI skill. Skills should not enforce code style; they guide decisions that require context and judgment. They may run configured checks and report their results, but they do not replace automated enforcement.
+
+| Work | Skills | Invocation |
+| --- | --- | --- |
+| Frontend code | `frontend` | Automatic |
+| Laravel code | `laravel-php` and `laravel-architecture` together | Automatic |
+| Other PHP code | `laravel-php`, using the relevant PHP guidance | Automatic |
+| Writing or reviewing tests | `testing`, for backend and frontend behavior | Automatic |
+| Commits and PR creation or updates | `version-control` | Automatic |
+| Code cleanup | `simplify` | Manual only |
+| PR, branch, or local-diff review | `review-pr` | Manual only |
+
+Automatic selection depends on the skills being installed, available to the host, and matched to the task. These are skill-selection rules, not file hooks.
+
+A typical workflow is:
+
+1. Build or change a feature. The relevant coding and testing skills guide the work without requiring a separate command.
+2. Optionally invoke `simplify`. It runs four review perspectives in parallel where available and applies worthwhile changes that preserve behavior.
+3. Invoke `review-pr` when ready for review. It runs the available built-in correctness review, or a fallback reviewer, alongside relevant specialist subagents. It verifies and consolidates findings without changing code or posting to GitHub. Test execution remains separate unless requested or required by project instructions.
+4. Address findings, then request a commit or PR. The version-control conventions apply automatically. For UI changes, create the PR first, then offer optional screenshots unless already requested.
+
+Use `$simplify` and `$review-pr` in Codex, or `/simplify` and `/review-pr` in Claude Code. Both skills are configured for manual invocation in both hosts. Automatic coding guidance does not itself start either workflow or authorize a commit, push, or PR.
+
 ## Sources
 
 These references informed the skills. Personal preferences override upstream guidance. Links to `main` can change; versioned links identify the source used.
