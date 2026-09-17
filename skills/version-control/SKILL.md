@@ -21,7 +21,7 @@ description: Apply personal Git conventions when writing commits, staging change
 - Use backticks for code and keywords.
 - Link to files only when needed.
 - Prefer updating the original PR description over commenting on your own PR.
-- Attach screenshots with `gh pr create --attach <image>` or `gh pr edit <number> --attach <image>`. Do not commit screenshots for PR descriptions.
+- For UI changes, create the PR first, then ask whether to add optional screenshots for context. If requested, use the browser agent skill or available browser automation skill or MCP server to capture the modified UI and attach it with `gh pr edit <number> --attach <image>`. Do not commit screenshots for PR descriptions. If screenshots were already requested, proceed after creating the PR without asking again.
 
 ## Shared context
 
