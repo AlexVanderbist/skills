@@ -19,6 +19,8 @@ Personal skills for Codex and Claude Code.
 npx skills add AlexVanderbist/skills -g -a codex claude-code
 ```
 
+Remove or disable overlapping skills, such as the original Spatie guideline skills, before using these replacements. Loading both can introduce conflicting or duplicate instructions.
+
 ### Optional: load guidance before planning
 
 After installing the skills, add this snippet to your global `~/.codex/AGENTS.md` and `~/.claude/CLAUDE.md`. If those files share a symlink target, edit it only once. This makes the timing explicit rather than relying only on automatic skill selection. Project instruction files can record project-specific exceptions.
