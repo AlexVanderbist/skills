@@ -1,5 +1,6 @@
 ---
 name: simplify
+disable-model-invocation: true
 description: Review changed code with four independent reviewers for reuse, clarity, efficiency, and root-cause improvements, then apply fixes without changing behavior. Use when asked to simplify or clean up code.
 metadata:
   sources: "Anthropic Claude Code /simplify 2.1.274 and code-simplifier plugin"

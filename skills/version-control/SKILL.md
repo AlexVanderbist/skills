@@ -1,6 +1,6 @@
 ---
 name: version-control
-description: Apply personal Git conventions when writing commits, staging changes, creating or updating pull requests, and merging branches.
+description: Apply whenever staging or committing changes, writing commit messages, creating or updating pull requests or their descriptions, or merging branches. Use automatically as part of those tasks to follow personal Git and GitHub conventions.
 ---
 
 # Version Control

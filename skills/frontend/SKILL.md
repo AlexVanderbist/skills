@@ -1,6 +1,6 @@
 ---
 name: frontend
-description: Build and review frontend code with clear component boundaries, readable logic, and reuse of the project's existing UI library.
+description: Apply whenever creating, editing, debugging, refactoring, or reviewing frontend code, including JavaScript, TypeScript, UI components, HTML, CSS, and frontend templates. Guide component reuse, readable logic, and structure using the project's conventions.
 ---
 
 # Frontend
@@ -79,5 +79,5 @@ Use this structure to fill gaps, not to reorganize an established application or
 - Follow the documented direction for new code without expanding the task into an unrelated migration.
 - Preserve deliberate exceptions instead of enforcing uniformity blindly.
 - Consult version-matched documentation through Context7 when needed and available.
-- Use configured formatting, linting, and type checks rather than duplicating their rules here.
-- Use the testing skill when available for behavioral coverage and verify changed interactions in the browser.
+- During implementation, use configured formatting, linting, and type checks rather than duplicating their rules here. Use the testing skill when available for behavioral coverage and verify changed interactions in the browser.
+- For review-only requests, report findings without editing files or triggering state-changing UI flows. Use non-mutating checks and leave execution to the coordinator when one is managing the review.

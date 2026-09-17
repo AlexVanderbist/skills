@@ -1,5 +1,6 @@
 ---
 name: review-pr
+disable-model-invocation: true
 description: Review a pull request, branch, or local diff by running parallel correctness and project-convention reviewers, then verifying and consolidating their findings.
 ---
 

@@ -10,6 +10,8 @@ Judge coverage by the behaviors protected, not a percentage or test count.
 
 The examples primarily use PHP and Laravel, but the principles also apply to frontend tests: meaningful behavior, readable setup, minimal mocking, and a small suite. Adapt them to the project's frontend framework and test tools.
 
+For review-only requests, assess the existing suite and report recommendations without adding, refactoring, or deleting tests. Test execution is separate: run tests when requested or required by project instructions, and leave execution to the coordinator when one is managing the review.
+
 ## Decide whether a test is needed
 
 - Not every change needs an automated test. Temporary features, developer-only routes, and one-off maintenance commands usually do not need lasting tests.
@@ -72,7 +74,7 @@ The examples primarily use PHP and Laravel, but the principles also apply to fro
 ## Run tests efficiently
 
 - Use the project's existing test commands and configuration.
-- Run focused tests during development and the affected suites before finishing. Factory or shared-setup changes may affect several domains.
+- When implementing changes, run focused tests during development and the affected suites before finishing. Factory or shared-setup changes may affect several domains.
 - Use parallel execution for full-suite runs when the project supports it.
 - Use Pest's Test Impact Analysis locally when available to run only tests affected by changes.
 - Control time when needed and respect test database and parallel-worker isolation.

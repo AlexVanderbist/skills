@@ -1,6 +1,6 @@
 ---
 name: laravel-php
-description: Apply personal Laravel and PHP conventions when writing, changing, or reviewing PHP code and Blade templates.
+description: Apply whenever creating, editing, debugging, refactoring, or reviewing Laravel code, PHP code, or Blade templates. For Laravel work, use alongside laravel-architecture to apply both coding conventions and architectural guidance.
 ---
 
 # Laravel and PHP
@@ -82,7 +82,7 @@ Never silently swallow an exception. Every catch must propagate the failure, rep
 
 ## Review
 
-Before a skill-based review, run the configured formatter and static analysis unless the coordinating workflow already ran them for the current changes. Resolve mechanical formatting issues first.
+For review-only requests, report findings without editing files. Run configured formatting checks and static analysis in non-mutating modes unless the coordinating workflow owns those checks or already ran them for the current changes. When implementing or fixing code, use the configured formatter to resolve mechanical formatting issues.
 
 Do not duplicate tooling failures as review findings. If a check cannot run, state that and continue reviewing.
 

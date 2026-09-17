@@ -1,11 +1,13 @@
 ---
 name: laravel-architecture
-description: Guide the placement of Laravel application code across entry points, business domains, and external integrations when implementing or reviewing features.
+description: Apply whenever creating, editing, debugging, refactoring, or reviewing Laravel application code, alongside laravel-php. Guide entry points, domain responsibilities, and external integrations; apply only the guidance relevant to the change.
 ---
 
 # Laravel Architecture
 
 Follow the project's existing namespaces and directory conventions. Do not create empty layers or directories in anticipation of future needs.
+
+For review-only requests, report concrete boundary or responsibility issues without moving code or introducing new layers.
 
 ## Entry points
 
