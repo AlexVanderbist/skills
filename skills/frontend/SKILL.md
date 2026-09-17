@@ -29,6 +29,12 @@ Use this structure to fill gaps, not to reorganize an established application or
 - Share genuinely common behavior. Similar-looking features do not always need a single configurable implementation.
 - Keep third-party component code separate when the project maintains it as an upstream-derived layer.
 
+## Design from callers
+
+Before introducing a substantial shared component, hook, or helper API, sketch realistic usage examples for its common callers. Check for awkward props or flags, repeated setup, required call ordering, and knowledge of implementation details.
+
+For consequential API decisions, compare two plausible designs through the same usage examples. Prefer the design that simplifies common calls while preserving required behavior and existing conventions. Keep this check proportionate to the change.
+
 ## Keep responsibilities clear
 
 - Keep generic UI components independent of business concepts.

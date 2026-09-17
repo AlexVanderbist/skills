@@ -66,6 +66,7 @@ Keep shared setup straightforward. Do not replace readable setup with elaborate 
 - Check whether the change addresses the underlying mechanism or adds a fragile special case around it.
 - Prefer a simpler fix at the appropriate layer when it removes workarounds and preserves intended behavior.
 - Flag leaky abstractions and functions that combine unrelated concerns.
+- Apply the deletion test to wrappers: imagine removing the wrapper and calling its implementation directly. If this simplifies callers without spreading complexity, consider removing it. If callers must repeat coordination or implementation details, keep it. Preserve thin layers that serve a concrete framework or architectural purpose.
 - In PHP, extract cohesive business operations into action classes when this makes the calling code easier to understand. Follow existing action conventions and preserve behavior. Simple reads or writes can stay inline; broader domain restructuring belongs in a separate architecture task.
 - Keep fixes within the review scope. Do not turn cleanup into a broad redesign or build abstractions for hypothetical future needs.
 

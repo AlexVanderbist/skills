@@ -43,6 +43,12 @@ Design each external integration so it could be extracted into a self-contained 
 
 Do not actually extract a package unless the task calls for it.
 
+## Design from callers
+
+Before introducing a substantial shared API, sketch realistic usage examples for its common callers. Check for awkward flags, repeated setup, required call ordering, and knowledge of implementation details.
+
+For consequential API decisions, compare two plausible designs through the same usage examples. Prefer the design that simplifies common calls while preserving required behavior and existing conventions. Keep this check proportionate to the change.
+
 ## Example: blog with paid subscriptions
 
 This tree illustrates placement and naming, not required boilerplate. Only create files and mappings that the feature needs.
