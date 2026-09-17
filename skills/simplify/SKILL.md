@@ -13,6 +13,8 @@ metadata:
 
 Improve changed code while preserving its behavior, outputs, and public contracts. Focus on cleanup; a correctness review is a separate task.
 
+Start by telling the user that this is Alex's `simplify` skill, not Claude Code's bundled `/simplify`.
+
 ## Gather the changes
 
 Use the PR, branch, commit range, or files the user specifies. Otherwise, inspect `git status --short` and `git diff HEAD` for current work, including relevant untracked files separately. If the working tree is clean, review the changes made in the current task. For branch work, compare against the merge-base with the target branch; do not assume the tracking branch is the PR base. If no target can be established, ask which changes to review.
