@@ -8,6 +8,15 @@ description: Write and review tests for meaningful application behavior, with fe
 Prefer a small, readable suite that covers business behavior.
 Judge coverage by the behaviors protected, not a percentage or test count.
 
+The examples primarily use PHP and Laravel, but the principles also apply to frontend tests: meaningful behavior, readable setup, minimal mocking, and a small suite. Adapt them to the project's frontend framework and test tools.
+
+## Decide whether a test is needed
+
+- Not every change needs an automated test. Temporary features, developer-only routes, and one-off maintenance commands usually do not need lasting tests.
+- A new page behind existing developer-only middleware does not need a test merely to prove that middleware is attached. Verify the page and access behavior with a quick browser check, using the browser agent skill when available.
+- Repository scripts, maintenance scripts, GitHub Actions, and their supporting scripts usually do not need dedicated tests. Prefer an appropriate direct check or dry run.
+- Test meaningful business logic, data changes, or failure risks when they warrant it, even in temporary tooling. Judge the behavior rather than requiring tests for every file.
+
 ## Start with existing coverage
 
 - Before adding a test, inspect the affected feature or domain's tests, shared setup, and factories.

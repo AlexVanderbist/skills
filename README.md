@@ -5,8 +5,10 @@ Personal skills for Codex and Claude Code.
 ## Available skills
 
 - [composer-local-package](skills/composer-local-package/README.md): Switch Composer packages between Packagist and local copies.
+- [frontend](skills/frontend/SKILL.md): Build and review frontend code with reusable UI components and clear structure.
 - [laravel-architecture](skills/laravel-architecture/SKILL.md): Organize Laravel entry points, business domains, and external integrations.
 - [laravel-php](skills/laravel-php/SKILL.md): Personal Laravel and PHP conventions for implementation and review.
+- [review-pr](skills/review-pr/SKILL.md): Coordinate parallel correctness and specialist reviews, then verify and consolidate findings.
 - [simplify](skills/simplify/SKILL.md): Review code with four reviewers and apply cleanup without changing behavior.
 - [testing](skills/testing/SKILL.md): Write and review feature-focused tests with readable setup and minimal mocking.
 - [version-control](skills/version-control/SKILL.md): Personal conventions for commits, pull requests, and merging branches.
@@ -26,9 +28,11 @@ These references informed the skills. Personal preferences override upstream gui
 | Local skill | References |
 | --- | --- |
 | `composer-local-package` | Existing skill in this repository; [Composer Link](https://github.com/sandersander/composer-link) is its preferred linking tool. |
+| `frontend` | Primary fallback: Sebastian De Deyne's [frontend structure article](https://spatie.be/blog/how-to-structure-the-frontend-of-a-laravel-inertia-react-application). Personal project references below supply additional conventions. |
 | `version-control` | [Spatie version-control skill](https://github.com/spatie/guidelines-skills/blob/main/resources/boost/skills/spatie-version-control/SKILL.md), [Spatie version-control guidelines](https://spatie.be/guidelines/version-control). |
 | `laravel-php` | [Spatie Laravel/PHP skill](https://github.com/spatie/guidelines-skills/blob/main/resources/boost/skills/spatie-laravel-php/SKILL.md), [its detailed reference](https://github.com/spatie/guidelines-skills/blob/main/resources/boost/skills/spatie-laravel-php/references/spatie-laravel-php-guidelines.md), [Spatie guidelines](https://spatie.be/guidelines). |
 | `laravel-architecture` | Personal project conventions and review notes listed below. |
+| `review-pr` | Personal review preferences; the `laravel-php`, `laravel-architecture`, `frontend`, and `testing` skills; code-review references below. |
 | `testing` | Personal project instructions and Monizze review notes listed below; Pest documentation for [architecture tests](https://pestphp.com/docs/arch-testing), [parallel execution](https://pestphp.com/docs/optimizing-tests), and [Test Impact Analysis](https://pestphp.com/docs/tia). |
 | `simplify` | Claude Code's bundled `/simplify` from [version 2.1.274](https://www.npmjs.com/package/@anthropic-ai/claude-code/v/2.1.274), combined with Anthropic's [code-simplifier prompt at the source revision](https://github.com/anthropics/claude-plugins-official/blob/ceb9b72b4c4c20ad39efce780edd0aabe80ebce3/plugins/code-simplifier/agents/code-simplifier.md). |
 
@@ -46,8 +50,12 @@ These are local references under `~/Projects`, unless another path is shown. The
 | `~/.codex/AGENTS.md` | Global preferences supplied with repository work. |
 | `flareapp.io/CLAUDE.md` | PHP conventions, method extraction, exceptions, entry points, and domain responsibilities. |
 | `flareapp.io/.claude/FRONTEND.md` | Shared components, data helpers, and intentional integration exceptions. |
+| `flareapp.io/docs/frontend-structure.md` | Component boundaries, convenient shared APIs, and reasons to keep different forms separate. |
 | `crew-backoffice/CLAUDE.md` | Laravel Data, actions, visibility, and migrations. |
 | `cas-frontend/CLAUDE.md` | Shared UI components, endpoint factories, and `useData`. |
+| `cas-frontend/README.md` | Feature organization, component reuse, and direct imports. |
+| `cas-frontend/docs/i18n.md` | Translation context, complete messages, and language changes. |
+| `cas-frontend/docs/zebra-browser-print.md` | Inspected for frontend integration guidance; device-specific rules remain local. |
 | `cas-fallback/CLAUDE.md` | Inspected for additional conventions; no specific rule adopted. |
 | `gj-2020-backoffice/CLAUDE.md` and `AGENTS.md` | Domain organization, protected properties, and migrations. |
 | `laravel-mailcoach/CLAUDE.md` | Public-repository content, extensibility, and API specifications. |
@@ -67,7 +75,7 @@ These notes contain alternatives and discussion points. They are not adopted who
 
 ### Code-review references
 
-These were evaluated for a future PR review workflow. They are not installed or copied by this repository.
+These informed the PR review workflow. The external reviewers are not installed or copied by this repository.
 
 - [Matt Pocock's code-review skill](https://github.com/mattpocock/skills/blob/main/skills/engineering/code-review/SKILL.md): separate standards and specification reviews.
 - [Codex built-in review rubric](https://github.com/openai/codex/blob/main/codex-rs/prompts/templates/review/rubric.md): evidence requirements, severity, and finding format.
