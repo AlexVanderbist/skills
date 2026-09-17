@@ -19,6 +19,20 @@ Personal skills for Codex and Claude Code.
 npx skills add AlexVanderbist/skills -g -a codex claude-code
 ```
 
+### Optional: load guidance before planning
+
+After installing the skills, add this snippet to your global `~/.codex/AGENTS.md` and `~/.claude/CLAUDE.md`. If those files share a symlink target, edit it only once. This makes the timing explicit rather than relying only on automatic skill selection. Project instruction files can record project-specific exceptions.
+
+```markdown
+## Before implementation
+
+- Before planning or changing Laravel code, read and apply both `laravel-php` and `laravel-architecture`.
+- Before planning or changing frontend code, read and apply `frontend`.
+- Apply `testing` when writing or reviewing tests.
+- Apply `version-control` before committing or creating/updating a PR.
+- Invoke `review-pr` and `simplify` only when explicitly requested.
+```
+
 ## Workflow
 
 Coding conventions apply during implementation and review. Existing project instructions take precedence over the shared defaults.
@@ -45,6 +59,10 @@ A typical workflow is:
 4. Address findings, then request a commit or PR. The version-control conventions apply automatically. For UI changes, create the PR first, then offer optional screenshots unless already requested.
 
 Use `$simplify` and `$review-pr` in Codex, or `/simplify` and `/review-pr` in Claude Code. Both skills are configured for manual invocation in both hosts. Automatic coding guidance does not itself start either workflow or authorize a commit, push, or PR.
+
+In Codex, `review-pr` invokes the built-in Codex review capability when it is callable for the requested scope, alongside the personal specialist reviewers. If unavailable, it uses a general correctness reviewer and reports that fallback.
+
+When installed as a personal or project Claude Code skill, this repository's `simplify` overrides the bundled `/simplify` command through its matching name. It does not invoke the bundled version separately. See [Claude Code's skill precedence rules](https://code.claude.com/docs/en/skills#resolve-skills-that-share-a-name).
 
 ## Sources
 
