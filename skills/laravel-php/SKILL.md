@@ -78,7 +78,13 @@ Never silently swallow an exception. Every catch must propagate the failure, rep
 ## Migrations and API contracts
 
 - Do not write `down()` methods in migrations. Correct deployed schema changes with a new forward migration.
+- Keep migrations short and focused, preferring atomic changes where supported. Consider deployment ordering and execution in short-lived environments such as Kubernetes; move lengthy backfills into the project's established maintenance or background process.
 - When changing API endpoints, inputs, or responses, check for maintained OpenAPI specifications or API documentation, including `docs/`, `resources/docs/`, and paths identified by project instructions. Update affected contracts through the project's established editing or generation workflow.
+
+## Jobs and development data
+
+- Prefer short queued jobs over long-running ones. If a job may take more than about five minutes, consider splitting it into smaller units, accounting for worker timeouts, interruptions, and retries. Five minutes is a guideline, not a hard limit.
+- When adding models, consider adding or extending factories and seeders to make testing and local development easier. Build on existing seeding scenarios: for a new members feature, attach members to the already-seeded teams rather than creating a separate, disconnected scenario.
 
 ## Review
 
