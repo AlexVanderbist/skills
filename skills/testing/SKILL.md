@@ -70,6 +70,7 @@ For review-only requests, assess the existing suite and report recommendations w
 - When useful, add Pest architecture tests, even if the project has none.
 - Encode established project rules, such as dependency boundaries. Do not introduce new architectural restrictions through tests.
 - Keep the rules focused and avoid duplicating checks already enforced by formatters or static analysis.
+- Format each rule as a readable chain: one method call per line, and one class per line in expectation arrays, so a change touches one line.
 
 ## Run tests efficiently
 

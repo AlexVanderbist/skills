@@ -30,12 +30,21 @@ For every Laravel feature or package you use, consult its documentation through 
 
 - Use method and variable names that describe the value or operation. Do not abbreviate: use `$expirationDate`, `$customer`, and `$exception`.
 - Name checks as checks and operations as operations.
-- Prefer early returns. Handle failure and exceptional cases first; keep the happy path last.
+- Prefer early returns. Handle failure and exceptional cases first; keep the happy path last. When flattening nested conditions, keep the existing error behavior.
 - Split complicated conditions into separate, understandable checks. Preserve any work that must happen afterward.
 - Split long methods into smaller, clearly named protected methods. Loops are often useful extraction boundaries.
 - Extract long expressions or calculations into named methods or temporary variables when the name explains a meaningful step.
 - In output arrays, prefer a descriptive variable over a long inline calculation as the value.
 - Keep values used by one method close to their use rather than moving them to class constants without a reason.
+
+## Readable formatting
+
+The formatter does not make these choices.
+
+- Separate meaningful steps with a blank line. A few closely related assignments can stay together.
+- Put each call of a multi-call method chain on its own line, such as `Model::query()`, `->where()`, and `->first()`. A change then touches one line.
+- Prefer string interpolation over concatenation for dynamic strings: `"Card {$cardId} could not be activated."`.
+- Write validation rules as arrays, `['required', 'email', 'max:255']`, not pipe-delimited strings.
 
 ## Naming classes
 
@@ -58,18 +67,32 @@ Do not add `Interface`, `Exception`, or `Enum` suffixes:
 
 Name events after what happens or has happened, such as `UserRegistering` or `UserRegistered`.
 
+Use PascalCase for class names and enum cases, and treat acronyms as words: `CrefGenerator`, not `CREFGenerator`; `case AwaitingActivation`, not `case AWAITING_ACTIVATION`.
+
 ## Classes and methods
 
 - Prefer protected over private visibility for properties and methods, even when overriding is not currently expected. Keep public entry points public.
 - Do not make classes final.
 - Avoid readonly classes by default. Use one only when immutability is a deliberate requirement and its restrictions fit the class.
 - Add `void` return types to methods and functions that return no value, where compatible with inherited or framework contracts.
+- Use constructor property promotion, with one promoted parameter per line.
 
 ## PHPDoc
 
 Use docblocks only to add type information that native PHP types cannot express, such as collection key and value types, generics, or fixed array shapes. Do not repeat native type declarations.
 
+Describe a fixed array structure with an array shape, such as `array{id: int, isBlocked: bool}`, rather than `array<string, mixed>`. Consider a DTO instead when the structure is passed around.
+
+Remove docblocks whose description only restates the method name.
+
 Keep PHPStan types honest. An annotation must describe the actual runtime data, not merely silence an error. For Eloquent property inference problems, check model casts, schema information, and the code's shape before adding `@property` annotations. Correct the underlying mismatch where possible.
+
+## Comments
+
+- Default to no comments. Put the explanation in a variable or method name instead of describing the next line.
+- Keep a comment for a surprising decision, a workaround, or a limitation that cannot be removed. Keep it short.
+- Keep PHPDoc that static analysis or API documentation needs.
+- Generated code tends to over-comment. Before finishing, remove comments that restate the code.
 
 ## Exceptions
 
