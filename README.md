@@ -5,8 +5,10 @@ Personal skills for Codex and Claude Code.
 ## Available skills
 
 - [composer-local-package](skills/composer-local-package/README.md): Switch Composer packages between Packagist and local copies.
+- [laravel-architecture](skills/laravel-architecture/SKILL.md): Organize Laravel entry points, business domains, and external integrations.
 - [laravel-php](skills/laravel-php/SKILL.md): Personal Laravel and PHP conventions for implementation and review.
 - [simplify](skills/simplify/SKILL.md): Review code with four reviewers and apply cleanup without changing behavior.
+- [testing](skills/testing/SKILL.md): Write and review feature-focused tests with readable setup and minimal mocking.
 - [version-control](skills/version-control/SKILL.md): Personal conventions for commits, pull requests, and merging branches.
 
 ## Install
@@ -14,3 +16,71 @@ Personal skills for Codex and Claude Code.
 ```bash
 npx skills add AlexVanderbist/skills -g -a codex claude-code
 ```
+
+## Sources
+
+These references informed the skills. Personal preferences override upstream guidance. Links to `main` can change; versioned links identify the source used.
+
+### Upstream skills and guidelines
+
+| Local skill | References |
+| --- | --- |
+| `composer-local-package` | Existing skill in this repository; [Composer Link](https://github.com/sandersander/composer-link) is its preferred linking tool. |
+| `version-control` | [Spatie version-control skill](https://github.com/spatie/guidelines-skills/blob/main/resources/boost/skills/spatie-version-control/SKILL.md), [Spatie version-control guidelines](https://spatie.be/guidelines/version-control). |
+| `laravel-php` | [Spatie Laravel/PHP skill](https://github.com/spatie/guidelines-skills/blob/main/resources/boost/skills/spatie-laravel-php/SKILL.md), [its detailed reference](https://github.com/spatie/guidelines-skills/blob/main/resources/boost/skills/spatie-laravel-php/references/spatie-laravel-php-guidelines.md), [Spatie guidelines](https://spatie.be/guidelines). |
+| `laravel-architecture` | Personal project conventions and review notes listed below. |
+| `testing` | Personal project instructions and Monizze review notes listed below; Pest documentation for [architecture tests](https://pestphp.com/docs/arch-testing), [parallel execution](https://pestphp.com/docs/optimizing-tests), and [Test Impact Analysis](https://pestphp.com/docs/tia). |
+| `simplify` | Claude Code's bundled `/simplify` from [version 2.1.274](https://www.npmjs.com/package/@anthropic-ai/claude-code/v/2.1.274), combined with Anthropic's [code-simplifier prompt at the source revision](https://github.com/anthropics/claude-plugins-official/blob/ceb9b72b4c4c20ad39efce780edd0aabe80ebce3/plugins/code-simplifier/agents/code-simplifier.md). |
+
+The previous local `simplify` was a Codex adaptation of Claude Code [2.1.63](https://www.npmjs.com/package/@anthropic-ai/claude-code/v/2.1.63). The newer bundled prompt was extracted from the published native package, not a standalone GitHub Markdown file.
+
+For future comparisons, see the [current code-simplifier prompt](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/code-simplifier/agents/code-simplifier.md), its [license](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/code-simplifier/LICENSE), and the [Claude Code changelog](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md).
+
+### Personal project instructions
+
+These are local references under `~/Projects`, unless another path is shown. Their contents are not copied into this repository.
+
+| File | Relevant guidance |
+| --- | --- |
+| `~/.claude/CLAUDE.md` | PR descriptions, screenshot attachments, tests, comments, and reuse. |
+| `~/.codex/AGENTS.md` | Global preferences supplied with repository work. |
+| `flareapp.io/CLAUDE.md` | PHP conventions, method extraction, exceptions, entry points, and domain responsibilities. |
+| `flareapp.io/.claude/FRONTEND.md` | Shared components, data helpers, and intentional integration exceptions. |
+| `crew-backoffice/CLAUDE.md` | Laravel Data, actions, visibility, and migrations. |
+| `cas-frontend/CLAUDE.md` | Shared UI components, endpoint factories, and `useData`. |
+| `cas-fallback/CLAUDE.md` | Inspected for additional conventions; no specific rule adopted. |
+| `gj-2020-backoffice/CLAUDE.md` and `AGENTS.md` | Domain organization, protected properties, and migrations. |
+| `laravel-mailcoach/CLAUDE.md` | Public-repository content, extensibility, and API specifications. |
+| `mailcoach-app/CLAUDE.md` | Existing conventions, documentation versions, and framework usage. |
+| `Pluck/CLAUDE.md` | Update original PR descriptions and keep their formatting simple. |
+
+Only the following Monizze review notes informed the PHP, architecture, and testing skills. Monizze source files and team-authored conventions are not sources for these skills.
+
+- `~/Projects/monizze/review/code-writing-and-style.md`
+- `~/Projects/monizze/review/standards-and-enforcement.md`
+- `~/Projects/monizze/review/repository-structure-and-patterns.md`
+- `~/Projects/monizze/review/card-service.md`
+- `~/Projects/monizze/review/alix-backend.md`
+- `~/Projects/monizze/review/architecture-across-applications.md`
+
+These notes contain alternatives and discussion points. They are not adopted wholesale as rules.
+
+### Code-review references
+
+These were evaluated for a future PR review workflow. They are not installed or copied by this repository.
+
+- [Matt Pocock's code-review skill](https://github.com/mattpocock/skills/blob/main/skills/engineering/code-review/SKILL.md): separate standards and specification reviews.
+- [Codex built-in review rubric](https://github.com/openai/codex/blob/main/codex-rs/prompts/templates/review/rubric.md): evidence requirements, severity, and finding format.
+- [Codex repository review orchestrator](https://github.com/openai/codex/blob/main/.codex/skills/code-review/SKILL.md) and supporting skills: [breaking changes](https://github.com/openai/codex/blob/main/.codex/skills/code-review-breaking-changes/SKILL.md), [change size](https://github.com/openai/codex/blob/main/.codex/skills/code-review-change-size/SKILL.md), [testing](https://github.com/openai/codex/blob/main/.codex/skills/code-review-testing/SKILL.md), and [model context](https://github.com/openai/codex/blob/main/.codex/skills/code-review-context/SKILL.md).
+- [Codex command documentation](https://learn.chatgpt.com/docs/developer-commands#codex-review) and [review prompting](https://learn.chatgpt.com/docs/prompting): built-in review invocation.
+- [Claude Code review documentation](https://code.claude.com/docs/en/code-review#review-a-diff-locally) and [command reference](https://code.claude.com/docs/en/commands): `/review`, `/code-review`, and their options.
+- [Claude Code subagents](https://code.claude.com/docs/en/sub-agents) and [skills](https://code.claude.com/docs/en/skills): skill invocation and review orchestration.
+- [Anthropic's PR review toolkit simplifier](https://github.com/anthropics/claude-code/blob/main/plugins/pr-review-toolkit/agents/code-simplifier.md): another public simplifier reference.
+
+### Authoring tools
+
+Local skills used to create, validate, or document this collection:
+
+- `~/.codex/skills/.system/skill-creator/SKILL.md`
+- `~/.codex/skills/.system/openai-docs/SKILL.md`
+- `~/.agents/skills/simple-english/SKILL.md`
