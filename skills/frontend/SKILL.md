@@ -47,6 +47,7 @@ For consequential API decisions, compare two plausible designs through the same 
 ## Write code that explains itself
 
 - Use descriptive component, function, and variable names. Avoid abbreviations.
+- For React components, prefer named prop types over inline object types. Keep the complete prop type outside the component signature, and reuse existing types when they fit. Follow the project's naming conventions.
 - Prefer early returns and keep the happy path last where that clarifies the flow.
 - Split complicated conditions into understandable checks.
 - Give long expressions and calculations descriptive temporary variables, especially inside JSX and output objects.
