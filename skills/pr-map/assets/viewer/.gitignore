@@ -1,0 +1,7 @@
+node_modules/
+pr-data.json
+map.json
+map.previous.json
+.pr-map-state.json
+code-data/
+*.png

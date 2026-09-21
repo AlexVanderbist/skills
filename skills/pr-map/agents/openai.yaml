@@ -1,0 +1,4 @@
+interface:
+  display_name: "PR Map"
+  short_description: "Explore PR flows with interactive method diffs"
+  default_prompt: "Use $pr-map to build an interactive map of this pull request."
