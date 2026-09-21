@@ -98,10 +98,7 @@ class Worker
   );
   const map = {
     headRefOid: head,
-    width: 650,
-    height: 400,
-    lanes: [],
-    edges: [],
+    edges: [{ from: "caller", to: "worker", label: "dispatchWork()" }],
     nodes: [
       {
         id: "worker",
@@ -110,8 +107,6 @@ class Worker
         title: "Worker",
         kind: "ACTION",
         summary: "Calculate a value.",
-        x: 30,
-        y: 95,
       },
       {
         id: "caller",
@@ -120,8 +115,6 @@ class Worker
         title: "Caller",
         kind: "CONTEXT",
         summary: "Call the worker.",
-        x: 340,
-        y: 95,
       },
     ],
   };

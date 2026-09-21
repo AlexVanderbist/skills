@@ -5,15 +5,24 @@
   "scripts": {
     "build:data": "node scripts/build-code-data.mjs",
     "start": "python3 -m http.server --bind 127.0.0.1 4873",
-    "test": "node --test scripts/*.test.mjs"
+    "test": "node --test scripts/*.test.mjs",
+    "build:viewer": "esbuild app.js --bundle --format=esm --jsx=automatic --minify --outfile=dist/app.js",
+    "prestart": "npm run build:viewer"
   },
   "devDependencies": {
     "@babel/parser": "^7.29.9",
     "diff": "^9.0.0",
+    "esbuild": "0.28.2",
     "php-parser": "^3.7.0",
     "shiki": "^4.4.3"
   },
   "engines": {
     "node": ">=22"
+  },
+  "dependencies": {
+    "@dagrejs/dagre": "3.1.1",
+    "@xyflow/react": "12.11.6",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
   }
 }

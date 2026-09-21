@@ -27,7 +27,7 @@ If no checkout exists, clone the repository into a separate temporary directory.
 
 Read [references/map-format.md](references/map-format.md) before writing `map.json` in the output directory. Use the pinned commits in `pr-data.json` to inspect callers and method bodies with `git show` and `git grep`. Do not use uncommitted working files as the source of a PR diff.
 
-Arrange nodes by execution or data flow. Add entry points and unchanged classes when they explain a boundary. Label edges with the call, type, or data that passes between nodes. Mark queues, snapshots, and indirect data movement with dashed edges. State when an edge summarizes several calls. Example values must be illustrative, not presented as an execution trace.
+Connect nodes by execution or data flow. The viewer uses React Flow and Dagre to arrange them automatically; do not hand-author coordinates or SVG paths. Add entry points and unchanged classes when they explain a boundary. Label edges with the call, type, or data that passes between nodes. Mark queues, snapshots, and indirect data movement with dashed edges. State when an edge summarizes several calls. Example values must be illustrative, not presented as an execution trace.
 
 Choose the methods that participate in each node's flow. A class can appear in multiple nodes when different paths use different methods. Separate named nodes are better than an unreadable list of methods. For top-level scripts or assets, use file scope. Use explicit source ranges for unsupported languages or ambiguous method names.
 
@@ -54,7 +54,7 @@ The builder extracts complete method bodies from both revisions and diffs those 
 
 ## Open and inspect
 
-Start the viewer with `npm start`. It binds to `127.0.0.1:4873`. If that port is occupied, use another free port with Python's HTTP server. Keep the server running while the user reviews the map.
+Start the viewer with `npm start`, which builds the local browser bundle before serving it. It binds to `127.0.0.1:4873`. If that port is occupied, run `npm run build:viewer` and use another free port with Python's HTTP server. Keep the server running while the user reviews the map.
 
 Use available browser automation to inspect the page. Open nodes with modified, added, deleted, and unchanged code when present. Make sure that method scope excludes unrelated methods, imports stay hidden, and all three code views work. Scroll the panel until its header leaves the viewport. Inspect the graph for clipped nodes, overlapping labels, and misleading arrows.
 

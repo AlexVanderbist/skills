@@ -1,22 +1,16 @@
 # Map format
 
-Save `map.json` beside `pr-data.json` in the generated viewer directory. The map contains layout and flow descriptions. The snapshot and source builder supply file contents and diffs.
+Save `map.json` beside `pr-data.json` in the generated viewer directory. The map contains nodes and their connections. React Flow and Dagre calculate the layout. The snapshot and source builder supply file contents and diffs.
 
 The example uses invented names. Replace its commit ID, file paths, and methods with the pinned PR source.
 
 ```json
 {
   "headRefOid": "REPLACE_WITH_PR_HEAD_COMMIT",
-  "width": 1050,
-  "height": 600,
-  "lanes": [
-    { "title": "CREATE A POST", "x": 30, "y": 45 }
-  ],
+  "direction": "LR",
   "nodes": [
     {
       "id": "request",
-      "x": 30,
-      "y": 95,
       "kind": "HTTP ENTRY POINT",
       "title": "POST /api/posts",
       "description": "CreatePostRequest → Post",
@@ -25,8 +19,6 @@ The example uses invented names. Replace its commit ID, file paths, and methods 
     },
     {
       "id": "controller",
-      "x": 340,
-      "y": 95,
       "kind": "HTTP CONTROLLER",
       "title": "PostController",
       "file": "app/Http/Controllers/PostController.php",
@@ -39,10 +31,7 @@ The example uses invented names. Replace its commit ID, file paths, and methods 
     {
       "from": "request",
       "to": "controller",
-      "path": "M270 159 H340",
       "label": "request",
-      "x": 305,
-      "y": 145,
       "async": false
     }
   ]
@@ -51,7 +40,9 @@ The example uses invented names. Replace its commit ID, file paths, and methods 
 
 ## Layout and nodes
 
-Coordinates use the unscaled canvas. Nodes are 240 pixels wide and 128 pixels tall. Leave room for edge labels. The viewer fits the declared width and height, and supports dragging and zooming.
+The viewer automatically places 240 × 128 pixel nodes and reserves space for edge labels. Set optional `direction` to `LR` (left to right, the default) or `TB` (top to bottom). Canvas panning, zooming, and fit-to-view are available; individual nodes cannot be dragged.
+
+Do not write canvas dimensions, node coordinates, lanes, SVG paths, or label coordinates. Old geometry fields are ignored by the new viewer. Use descriptive node kinds and edge labels to explain each flow.
 
 Node IDs must be unique. `file` is an exact repository-relative path. Omit it for conceptual entry points. A file outside the changed-file list is loaded as unchanged context. Added, modified, deleted, and unchanged statuses come from the snapshot.
 
@@ -59,7 +50,7 @@ Node IDs must be unique. `file` is an exact repository-relative path. Omit it fo
 
 The same file can appear in multiple nodes with different methods. For example, give an action's `execute` path and its `restore` path separate nodes when their callers differ.
 
-Descriptions are short card captions. Summaries appear above the code. Source code, titles, descriptions, and labels render as escaped text. Edges use an SVG `path` plus label coordinates. `async` draws a dashed edge for queued or indirect data movement. Keep its label precise about what the edge represents.
+Descriptions are short card captions. Summaries appear above the code. Source code, titles, descriptions, and labels render as escaped text. Edges connect `from` and `to` node IDs; Dagre calculates their paths and label positions. `async` draws a dashed edge for queued or indirect data movement. Keep its label precise about what the edge represents.
 
 ## Explicit method ranges
 

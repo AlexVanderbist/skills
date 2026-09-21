@@ -13,21 +13,20 @@ const map = JSON.parse(await readFile("map.json", "utf8"));
 if (map.headRefOid !== data.headRefOid)
   throw new Error("Update map.json for the current PR commit before building.");
 if (
-  !(map.width > 0 && map.height > 0) ||
-  !Array.isArray(map.lanes) ||
   !Array.isArray(map.nodes) ||
   !Array.isArray(map.edges)
 )
-  throw new Error("Invalid map dimensions or collections.");
+  throw new Error("Invalid map collections.");
+if (map.direction && !["LR", "TB"].includes(map.direction))
+  throw new Error("Map direction must be LR or TB.");
 const nodeIds = new Set();
 for (const node of map.nodes) {
   if (
+    typeof node.id !== "string" ||
     !node.id ||
-    nodeIds.has(node.id) ||
-    !Number.isFinite(node.x) ||
-    !Number.isFinite(node.y)
+    nodeIds.has(node.id)
   )
-    throw new Error("Map nodes need unique IDs and numeric positions.");
+    throw new Error("Map nodes need unique string IDs.");
   nodeIds.add(node.id);
   if (
     !node.title ||
@@ -40,10 +39,7 @@ for (const node of map.nodes) {
 for (const edge of map.edges) {
   if (
     !nodeIds.has(edge.from) ||
-    !nodeIds.has(edge.to) ||
-    !edge.path ||
-    !Number.isFinite(edge.x) ||
-    !Number.isFinite(edge.y)
+    !nodeIds.has(edge.to)
   )
     throw new Error("Invalid map edge.");
 }

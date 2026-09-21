@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>PR map</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="dist/app.css" />
   </head>
   <body>
     <header>
@@ -16,21 +16,7 @@
     </header>
     <div class="app">
       <main>
-        <div id="viewport" aria-label="Interactive PR flow map">
-          <div id="world">
-            <svg id="edges" aria-hidden="true"></svg>
-            <div id="nodes"></div>
-          </div>
-          <div class="map-note">
-            Drag to pan · scroll to zoom · click a node to inspect
-          </div>
-          <div class="zoom-controls">
-            <button id="zoom-out" aria-label="Zoom out">−</button
-            ><span id="zoom-label">100%</span
-            ><button id="zoom-in" aria-label="Zoom in">+</button
-            ><button id="fit">Fit ↗</button>
-          </div>
-        </div>
+        <div id="viewport" aria-label="Interactive PR flow map"></div>
       </main>
       <aside id="inspector" hidden aria-label="Code inspector">
         <div class="inspector-top">
@@ -58,6 +44,6 @@
       </aside>
     </div>
     <div id="status" role="status" class="sr-only"></div>
-    <script type="module" src="app.js"></script>
+    <script type="module" src="dist/app.js"></script>
   </body>
 </html>

@@ -74,7 +74,7 @@ def prepare(url, repository, output):
     previous = json.loads((output / "pr-data.json").read_text()) if (output / "pr-data.json").exists() else None
     if not state_path.exists():
         template = Path(__file__).resolve().parents[1] / "assets" / "viewer"
-        shutil.copytree(template, output, dirs_exist_ok=True, ignore=shutil.ignore_patterns("node_modules", "__pycache__", "code-data"))
+        shutil.copytree(template, output, dirs_exist_ok=True, ignore=shutil.ignore_patterns("node_modules", "__pycache__", "code-data", "dist"))
     write_json(output / "pr-data.json", latest)
     write_json(state_path, {"repository": slug, "number": int(number), "sourceRepository": str(repository)})
     if previous:

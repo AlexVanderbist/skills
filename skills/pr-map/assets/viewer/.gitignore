@@ -5,3 +5,4 @@ map.previous.json
 .pr-map-state.json
 code-data/
 *.png
+dist/

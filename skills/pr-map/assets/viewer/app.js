@@ -1,3 +1,5 @@
+import { mountMap } from "./flow.jsx";
+import "./style.css";
 import { renderCode } from "./code-view.js";
 const $ = (selector) => document.querySelector(selector);
 const escapeHtml = (value) =>
@@ -22,9 +24,6 @@ const map = await fetch(`./map.json?v=${data.headRefOid}`, {
   cache: "no-store",
 }).then((response) => response.json());
 const nodes = map.nodes;
-const edges = map.edges;
-const mapWidth = map.width;
-const mapHeight = map.height;
 if (map.headRefOid !== data.headRefOid)
   throw new Error(
     "The map does not match the PR snapshot. Update map.json and rebuild the source data.",
@@ -40,19 +39,12 @@ nodes.forEach((node) => {
         : "modified"
     : "context";
 });
-$("#world").style.width = `${mapWidth}px`;
-$("#world").style.height = `${mapHeight}px`;
-$("#edges").setAttribute("width", mapWidth);
-$("#edges").setAttribute("height", mapHeight);
 $("#pr-title").textContent = `${data.repository} / #${data.number}`;
 $("#pr-title").title = `${data.title} · ${data.headRefOid.slice(0, 7)}`;
 $("#pr-link").href = data.url;
 document.title = `${data.repository} #${data.number} · PR map`;
 let selectedNode = null;
 let selectedPath = null;
-let scale = 1,
-  offsetX = 0,
-  offsetY = 0;
 let codeMode = "inline";
 let methodScope = "flow";
 let showImports = false;
@@ -60,34 +52,6 @@ let expandedContext = false;
 let renderRequest = 0;
 function methodsForNode(node = selectedNode) {
   return node?.methods || [];
-}
-function renderMap() {
-  $("#nodes").innerHTML =
-    map.lanes
-      .map(
-        (lane) =>
-          `<div class="lane-title" style="left:${lane.x ?? 30}px;top:${lane.y}px">${escapeHtml(lane.title)}</div>`,
-      )
-      .join("") +
-    nodes
-      .map((node) => {
-        const file = data.files.find((file) => file.path === node.path);
-        return `<button class="node ${node.type} ${selectedNode?.id === node.id ? "selected" : ""}" data-node="${escapeHtml(node.id)}" style="left:${node.x}px;top:${node.y}px" aria-label="Inspect ${escapeHtml(node.title)}"><div class="node-top"><span>${escapeHtml(node.kind)}</span><span class="node-status" title="File status in this PR">${node.type === "context" ? "CONTEXT" : node.type === "new" ? "NEW" : node.type === "deleted" ? "DELETED" : "CHANGED"}</span></div><h3>${escapeHtml(node.title)}</h3><p>${escapeHtml(node.description || "")}</p><span class="node-methods">${
-          escapeHtml(
-            methodsForNode(node)
-              .map((method) => method + "()")
-              .join(" · "),
-          ) || (node.path ? "script" : "entry point")
-        }</span>${file ? `<span class="counts">file +${file.additions} −${file.deletions}</span>` : ""}</button>`;
-      })
-      .join("");
-  $("#edges").innerHTML =
-    '<defs><marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="#b7accc" stroke-width="1.2"/></marker></defs>' +
-    edges
-      .map((edge) => {
-        return `<g><path class="edge ${edge.async ? "async" : ""}" d="${escapeHtml(edge.path)}" marker-end="url(#arrow)"/><text class="edge-label" x="${edge.x}" y="${edge.y}" text-anchor="middle">${escapeHtml(edge.label)}</text></g>`;
-      })
-      .join("");
 }
 async function renderInspector() {
   const request = ++renderRequest;
@@ -168,7 +132,7 @@ function inspect(node) {
   $("#inspector").hidden = false;
   $("#inspector").scrollTop = 0;
   renderInspector();
-  renderMap();
+  flow.select(selectedNode?.id);
   $("#status").textContent = `Opened ${node.title}`;
 }
 function closeInspector() {
@@ -176,41 +140,9 @@ function closeInspector() {
   $("#inspector").hidden = true;
   selectedNode = null;
   selectedPath = null;
-  renderMap();
-}
-function transform() {
-  $("#world").style.transform =
-    `translate(${offsetX}px,${offsetY}px) scale(${scale})`;
-  $("#zoom-label").textContent = `${Math.round(scale * 100)}%`;
-}
-function fit() {
-  const viewport = $("#viewport");
-  if (viewport.hidden) return;
-  scale = Math.min(
-    (viewport.clientWidth - 50) / mapWidth,
-    (viewport.clientHeight - 65) / mapHeight,
-    1.15,
-  );
-  scale = Math.max(0.18, scale);
-  offsetX = (viewport.clientWidth - mapWidth * scale) / 2;
-  offsetY = (viewport.clientHeight - mapHeight * scale) / 2 - 12;
-  transform();
-}
-function zoom(
-  factor,
-  x = $("#viewport").clientWidth / 2,
-  y = $("#viewport").clientHeight / 2,
-) {
-  const next = Math.max(0.18, Math.min(2, scale * factor));
-  offsetX = x - ((x - offsetX) * next) / scale;
-  offsetY = y - ((y - offsetY) * next) / scale;
-  scale = next;
-  transform();
+  flow.select(selectedNode?.id);
 }
 $(".app").addEventListener("click", (event) => {
-  const nodeButton = event.target.closest("[data-node]");
-  if (nodeButton)
-    inspect(nodes.find((node) => node.id === nodeButton.dataset.node));
   const mode = event.target.closest("[data-code-mode]");
   if (mode) {
     codeMode = mode.dataset.codeMode;
@@ -222,49 +154,12 @@ $(".app").addEventListener("click", (event) => {
   }
 });
 $("#close-inspector").addEventListener("click", closeInspector);
-$("#fit").addEventListener("click", fit);
-$("#zoom-in").addEventListener("click", () => zoom(1.2));
-$("#zoom-out").addEventListener("click", () => zoom(1 / 1.2));
-const viewport = $("#viewport");
-let drag = null;
-viewport.addEventListener("pointerdown", (event) => {
-  if (event.target.closest("button")) return;
-  drag = { x: event.clientX, y: event.clientY, offsetX, offsetY };
-  viewport.setPointerCapture(event.pointerId);
-  viewport.classList.add("dragging");
-});
-viewport.addEventListener("pointermove", (event) => {
-  if (!drag) return;
-  offsetX = drag.offsetX + event.clientX - drag.x;
-  offsetY = drag.offsetY + event.clientY - drag.y;
-  transform();
-});
-function stopDrag() {
-  drag = null;
-  viewport.classList.remove("dragging");
-}
-viewport.addEventListener("pointerup", stopDrag);
-viewport.addEventListener("pointercancel", stopDrag);
-viewport.addEventListener(
-  "wheel",
-  (event) => {
-    event.preventDefault();
-    const rect = viewport.getBoundingClientRect();
-    zoom(
-      Math.exp(-event.deltaY * 0.0015),
-      event.clientX - rect.left,
-      event.clientY - rect.top,
-    );
-  },
-  { passive: false },
-);
+const flow = mountMap($("#viewport"), map, data.files, inspect);
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") closeInspector();
-  if (event.key === "0" && event.target.tagName !== "INPUT") fit();
+  if (event.key === "0" && !event.target.closest("input, select, textarea"))
+    flow.fit();
 });
-new ResizeObserver(() => fit()).observe(viewport);
-renderMap();
-requestAnimationFrame(fit);
 
 $("#code-controls").addEventListener("change", (event) => {
   if (event.target.id === "method-scope") {
