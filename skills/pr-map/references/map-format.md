@@ -12,6 +12,7 @@ The example uses invented names. Replace its commit ID, file paths, and methods 
     {
       "id": "request",
       "kind": "HTTP ENTRY POINT",
+      "layer": "backend",
       "title": "POST /api/posts",
       "description": "CreatePostRequest → Post",
       "summary": "An authenticated request creates a post through the controller.",
@@ -20,6 +21,7 @@ The example uses invented names. Replace its commit ID, file paths, and methods 
     {
       "id": "controller",
       "kind": "HTTP CONTROLLER",
+      "layer": "backend",
       "title": "PostController",
       "file": "app/Http/Controllers/PostController.php",
       "methods": ["store"],
@@ -40,9 +42,13 @@ The example uses invented names. Replace its commit ID, file paths, and methods 
 
 ## Layout and nodes
 
-The viewer automatically places 240 × 128 pixel nodes and reserves space for edge labels. Set optional `direction` to `LR` (left to right, the default) or `TB` (top to bottom). Canvas panning, zooming, and fit-to-view are available; individual nodes cannot be dragged.
+The viewer automatically places 240 × 128 pixel nodes and reserves space for edge labels. Set optional `direction` to `LR` (left to right, the default) or `TB` (top to bottom). Drag nodes to adjust their positions, or drag the background to pan. Connections and labels follow moved nodes. Manual positions survive filtering within the current page session; they are not written to `map.json`. Reset layout clears manual positions and restores the automatic arrangement for the current view. Zooming and fit-to-view are also available.
 
 Do not write canvas dimensions, node coordinates, lanes, SVG paths, or label coordinates. Old geometry fields are ignored by the new viewer. Use descriptive node kinds and edge labels to explain each flow.
+
+Set `layer` to `backend`, `frontend`, or `shared` for every node, including conceptual nodes. Classify by responsibility, not extension alone: server-side JavaScript is back-end; Blade templates are front-end. Shared contracts and boundaries remain visible in both filtered views. The viewer removes connections to filtered-out nodes and recalculates the layout. Older maps without `layer` use common path/extension hints, falling back to shared.
+
+Omit test files and test-only nodes from generated maps unless requested.
 
 Node IDs must be unique. `file` is an exact repository-relative path. Omit it for conceptual entry points. A file outside the changed-file list is loaded as unchanged context. Added, modified, deleted, and unchanged statuses come from the snapshot.
 

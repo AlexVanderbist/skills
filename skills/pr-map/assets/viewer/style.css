@@ -15,6 +15,10 @@
   box-sizing: border-box;
 }
 body {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   margin: 0;
   font-size: 13px;
 }
@@ -46,6 +50,7 @@ button {
 }
 header {
   height: 65px;
+  flex-shrink: 0;
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
@@ -96,7 +101,8 @@ header {
   border-radius: 6px;
 }
 .app {
-  height: calc(100dvh - 65px);
+  flex: 1;
+  min-height: 0;
   display: flex;
 }
 .eyebrow {
@@ -219,8 +225,7 @@ h2 {
   padding: 6px;
 }
 #inspector {
-  width: 480px;
-  flex-shrink: 0;
+  flex: 0 0 auto;
   border-left: 1px solid var(--border);
   background: white;
   display: flex;
@@ -340,25 +345,6 @@ input {
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
 }
-@media (min-width: 1800px) {
-  #inspector {
-    width: 560px;
-  }
-}
-@media (max-width: 1150px) {
-  #inspector {
-    position: absolute;
-    right: 0;
-    top: 65px;
-    bottom: 0;
-    z-index: 5;
-    box-shadow: -12px 0 50px #37204715;
-    width: 460px;
-  }
-  .map-note {
-    display: none;
-  }
-}
 @media (max-width: 720px) {
   header {
     padding: 0 15px;
@@ -369,25 +355,6 @@ input {
   .prototype {
     display: none;
   }
-  #inspector {
-    width: min(480px, 100vw);
-  }
-}
-#inspector {
-  position: absolute;
-  right: 0;
-  top: 65px;
-  bottom: 0;
-  z-index: 5;
-  width: min(860px, calc(100vw - 40px));
-  box-shadow: -12px 0 45px #37204712;
-  transition: width 0.15s ease;
-}
-#inspector.split-mode {
-  width: min(1240px, calc(100vw - 40px));
-}
-#inspector.expanded {
-  width: calc(100vw - 20px);
 }
 .inspector-actions {
   display: flex;
@@ -658,11 +625,6 @@ input {
   margin-top: 7px;
 }
 @media (max-width: 800px) {
-  #inspector,
-  #inspector.split-mode,
-  #inspector.expanded {
-    width: 100vw;
-  }
   .code-lines code {
     font-size: 11px;
   }
@@ -770,4 +732,66 @@ input {
 .react-flow__controls-button {
   background: white;
   color: #7959af;
+}
+
+.map-toolbar {
+  flex-shrink: 0;
+  padding: 9px 24px;
+  border-bottom: 1px solid var(--border);
+  background: white;
+}
+#layer-filter {
+  display: flex;
+  gap: 3px;
+  width: max-content;
+  background: #f4f1f7;
+  border-radius: 6px;
+  padding: 3px;
+}
+#layer-filter button {
+  padding: 6px 14px;
+  border-radius: 4px;
+  color: #988ca4;
+  font-size: 12px;
+}
+#layer-filter button[aria-pressed="true"] {
+  background: white;
+  color: #77559f;
+  box-shadow: 0 1px 3px #321a5010;
+}
+.gutter {
+  flex: 0 0 8px;
+  cursor: col-resize;
+  touch-action: none;
+  background: #f0edf5;
+  border-inline: 1px solid var(--border);
+}
+.gutter:hover,
+.gutter:focus-visible {
+  background: #c8b8e6;
+}
+.gutter:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: -2px;
+}
+.empty-map {
+  color: #786d81;
+  padding: 16px;
+}
+
+.reset-layout {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: white;
+  color: #77559f;
+  font-size: 12px;
+}
+
+.react-flow__node .node {
+  cursor: grab;
+}
+
+.react-flow__node.dragging .node {
+  cursor: grabbing;
 }

@@ -31,12 +31,17 @@ Connect nodes by execution or data flow. The viewer uses React Flow and Dagre to
 
 Choose the methods that participate in each node's flow. A class can appear in multiple nodes when different paths use different methods. Separate named nodes are better than an unreadable list of methods. For top-level scripts or assets, use file scope. Use explicit source ranges for unsupported languages or ambiguous method names.
 
+Omit test files and test-only nodes when generating a map unless the user explicitly asks to include tests. Do not implement this as a viewer filter.
+
+Assign every node a `layer` of `backend`, `frontend`, or `shared` based on its responsibility, including conceptual entry points. JavaScript can belong to either side; use the source and callers to decide.
+
 Cover the PR's meaningful behavior changes. Group related files or supporting assets when separate nodes add no useful relationships. If the user requests one path, keep the map focused on that path. Do not present a selected slice as a complete map.
 
 Write each node's behavior summary from the source. Describe the trigger and resulting behavior. Preserve these interface choices unless the user requests a change:
 
-- The canvas is the main view and shows all mapped changes.
-- Nodes open code panels scoped to their participating methods.
+- The canvas has global All / Back-end / Front-end controls. Shared nodes remain visible in both layer views.
+- Nodes can be dragged, with connections following them. Reset layout restores automatic placement.
+- Nodes open a resizable code pane beside the graph, scoped to their participating methods. Keep both panes visible; the code pane must not overlay the graph.
 - Imports are hidden by default. Inline diff, side-by-side diff, and complete resulting code remain available.
 - Syntax highlighting covers PHP, Blade, JavaScript, TypeScript, HTML, CSS, JSON, and other supported files.
 - The complete panel scrolls, including its header, description, controls, code, and footer.

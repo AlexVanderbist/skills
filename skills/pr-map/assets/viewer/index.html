@@ -14,23 +14,22 @@
         >Open in GitHub ↗</a
       >
     </header>
+    <nav class="map-toolbar" aria-label="Map filters">
+      <div id="layer-filter" role="group" aria-label="Application layer">
+        <button data-layer="all" aria-pressed="true">All</button>
+        <button data-layer="backend" aria-pressed="false">Back-end</button>
+        <button data-layer="frontend" aria-pressed="false">Front-end</button>
+      </div>
+    </nav>
     <div class="app">
-      <main>
+      <main id="graph-pane">
         <div id="viewport" aria-label="Interactive PR flow map"></div>
       </main>
       <aside id="inspector" hidden aria-label="Code inspector">
         <div class="inspector-top">
           <span class="eyebrow">CHANGE INSPECTOR</span>
           <div class="inspector-actions">
-            <button
-              id="expand-inspector"
-              aria-label="Expand code panel"
-              title="Expand code panel"
-            >
-              ⤢</button
-            ><button id="close-inspector" aria-label="Close inspector">
-              ✕
-            </button>
+            <button id="close-inspector" aria-label="Close inspector">✕</button>
           </div>
         </div>
         <div id="inspector-summary"></div>

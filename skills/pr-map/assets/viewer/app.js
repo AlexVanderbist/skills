@@ -1,3 +1,5 @@
+import { filterMap } from "./map-filter.js";
+import { inspectorPane } from "./inspector-pane.js";
 import { mountMap } from "./flow.jsx";
 import "./style.css";
 import { renderCode } from "./code-view.js";
@@ -62,10 +64,6 @@ async function renderInspector() {
   $("#source-link").href = path
     ? `https://github.com/${data.repository}/blob/${data.files.find((file) => file.path === path)?.changeType === "DELETED" ? data.mergeBaseOid : data.headRefOid}/${path.split("/").map(encodeURIComponent).join("/")}`
     : data.url;
-  $("#inspector").classList.toggle(
-    "split-mode",
-    codeMode === "split" && Boolean(path),
-  );
   $("#code-controls").hidden = !path;
   $(".inspector-footer").hidden = !path;
   const entry = codeManifest[path];
@@ -129,7 +127,7 @@ function inspect(node) {
   selectedPath = node?.path || null;
   methodScope = "flow";
   expandedContext = false;
-  $("#inspector").hidden = false;
+  pane.open();
   $("#inspector").scrollTop = 0;
   renderInspector();
   flow.select(selectedNode?.id);
@@ -137,7 +135,7 @@ function inspect(node) {
 }
 function closeInspector() {
   renderRequest++;
-  $("#inspector").hidden = true;
+  pane.close();
   selectedNode = null;
   selectedPath = null;
   flow.select(selectedNode?.id);
@@ -155,6 +153,22 @@ $(".app").addEventListener("click", (event) => {
 });
 $("#close-inspector").addEventListener("click", closeInspector);
 const flow = mountMap($("#viewport"), map, data.files, inspect);
+const pane = inspectorPane($("#graph-pane"), $("#inspector"));
+$("#layer-filter").addEventListener("click", (event) => {
+  const button = event.target.closest("[data-layer]");
+  if (!button) return;
+  const visibleMap = filterMap(map, button.dataset.layer);
+  if (
+    selectedNode &&
+    !visibleMap.nodes.some((node) => node.id === selectedNode.id)
+  )
+    closeInspector();
+  for (const option of $("#layer-filter").querySelectorAll("button")) {
+    option.setAttribute("aria-pressed", option === button);
+  }
+  flow.update(visibleMap, selectedNode?.id);
+  $("#status").textContent = `${visibleMap.nodes.length} nodes shown`;
+});
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") closeInspector();
   if (event.key === "0" && !event.target.closest("input, select, textarea"))
@@ -168,12 +182,4 @@ $("#code-controls").addEventListener("change", (event) => {
   }
   if (event.target.id === "show-imports") showImports = event.target.checked;
   renderInspector();
-});
-$("#expand-inspector").addEventListener("click", () => {
-  const expanded = $("#inspector").classList.toggle("expanded");
-  $("#expand-inspector").setAttribute(
-    "aria-label",
-    expanded ? "Shrink code panel" : "Expand code panel",
-  );
-  $("#expand-inspector").setAttribute("aria-pressed", expanded);
 });

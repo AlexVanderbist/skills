@@ -1,6 +1,6 @@
 # Diagram library options
 
-Investigated 2026-09-21. The viewer now uses **React Flow + Dagre** for automatic layout, with individual node dragging disabled. Dagre is sufficient for these small flows; React Flow provides the canvas and custom cards. The alternatives below were evaluated before that choice.
+Investigated 2026-09-21. The viewer now uses **React Flow + Dagre** for automatic layout, with node dragging and a reset-layout control. Dagre is sufficient for these small flows; React Flow provides the canvas and custom cards. The alternatives below were evaluated before that choice.
 
 The previous map format supplied every node position, SVG edge path, and label coordinate manually. The current [map format](map-format.md) describes connections by node ID, and Dagre calculates positions, edge paths, and label placement.
 
