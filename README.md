@@ -12,13 +12,14 @@ These skills assume configured CI tooling for code style, static analysis, and a
 | [frontend](skills/frontend/SKILL.md) | Guide component reuse, readable frontend code, and structure. | Automatically when planning, changing, or reviewing frontend code. |
 | [laravel-architecture](skills/laravel-architecture/SKILL.md) | Organize entry points, domain responsibilities, and external integrations. | Automatically for Laravel work, alongside `laravel-php`. |
 | [laravel-php](skills/laravel-php/SKILL.md) | Apply Laravel and PHP conventions during implementation and review. | Automatically for Laravel, PHP, and Blade work. |
+| [orchestrate](skills/orchestrate/SKILL.md) | Act as an orchestrator that asks questions up front and delegates work to parallel subagents in the same directory. `autonomous` also allows review, simplify, commits, PRs, and issues. | Manual only: `$orchestrate` in Codex or `/orchestrate` in Claude Code. |
 | [pr-map](skills/pr-map/SKILL.md) | Build a local canvas of PR flows with method-focused diffs and syntax highlighting. | When asking to visualize a PR, explore its structure, or refresh an existing map. |
 | [review-pr](skills/review-pr/SKILL.md) | Run parallel correctness and specialist reviews, then verify and consolidate findings without editing code. Uses Codex's built-in review when available, with a general reviewer as fallback. | Manual only: `$review-pr` in Codex or `/review-pr` in Claude Code. |
 | [simplify](skills/simplify/SKILL.md) | Review code from four perspectives and apply cleanup that preserves behavior. Replaces Claude Code's bundled `/simplify` when installed as a personal or project skill. | Manual only: `$simplify` in Codex or `/simplify` in Claude Code. |
 | [testing](skills/testing/SKILL.md) | Favor meaningful feature coverage, readable setup, and minimal mocking for backend and frontend tests. | Automatically when writing or reviewing tests. |
 | [version-control](skills/version-control/SKILL.md) | Apply commit, PR description, screenshot, and merge conventions. | Automatically before commits and PR creation or updates, and when merging. |
 
-Automatic selection requires the skills to be installed and available to the host; it is not a file hook. `review-pr` and `simplify` have manual-only policies for both Codex and Claude Code.
+Automatic selection requires the skills to be installed and available to the host; it is not a file hook. `orchestrate`, `review-pr`, and `simplify` have manual-only policies for both Codex and Claude Code.
 
 ## Install
 
@@ -39,7 +40,7 @@ After installing the skills, add this snippet to your global `~/.codex/AGENTS.md
 - Before planning or changing frontend code, read and apply `frontend`.
 - Apply `testing` when writing or reviewing tests.
 - Apply `version-control` before committing or creating/updating a PR.
-- Invoke `review-pr` and `simplify` only when explicitly requested.
+- Invoke `orchestrate`, `review-pr`, and `simplify` only when explicitly requested.
 ```
 
 ## Sources
@@ -55,6 +56,7 @@ These references informed the skills. Personal preferences override upstream gui
 | `version-control` | [Spatie version-control skill](https://github.com/spatie/guidelines-skills/blob/main/resources/boost/skills/spatie-version-control/SKILL.md), [Spatie version-control guidelines](https://spatie.be/guidelines/version-control). |
 | `laravel-php` | [Spatie Laravel/PHP skill](https://github.com/spatie/guidelines-skills/blob/main/resources/boost/skills/spatie-laravel-php/SKILL.md), [its detailed reference](https://github.com/spatie/guidelines-skills/blob/main/resources/boost/skills/spatie-laravel-php/references/spatie-laravel-php-guidelines.md), [Spatie guidelines](https://spatie.be/guidelines). |
 | `laravel-architecture` | Personal architecture preferences. |
+| `orchestrate` | Personal orchestration preferences; Anthropic's [orchestrator-workers pattern](https://www.anthropic.com/engineering/building-effective-agents) and [multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system); [Claude Code subagents](https://code.claude.com/docs/en/sub-agents); [Codex subagents](https://developers.openai.com/codex/subagents); [superpowers subagent-driven development](https://github.com/obra/superpowers/blob/main/skills/subagent-driven-development/SKILL.md). |
 | `pr-map` | Personal visual review preferences. The bundled viewer uses React Flow and Dagre for layout, plus Shiki, JSDiff, PHP Parser, and Babel Parser for code views. |
 | `review-pr` | Personal review preferences; the `laravel-php`, `laravel-architecture`, `frontend`, and `testing` skills; code-review references below. |
 | `testing` | Personal testing preferences; Pest documentation for [architecture tests](https://pestphp.com/docs/arch-testing), [parallel execution](https://pestphp.com/docs/optimizing-tests), and [Test Impact Analysis](https://pestphp.com/docs/tia). |
