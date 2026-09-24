@@ -38,6 +38,31 @@ for (const edge of map.edges) {
   if (!nodeIds.has(edge.from) || !nodeIds.has(edge.to))
     throw new Error("Invalid map edge.");
 }
+const chapters = map.chapters ?? [];
+if (!Array.isArray(chapters) || chapters.length > 10)
+  throw new Error("Maps can have at most 10 chapters.");
+const chapterIds = new Set();
+for (const chapter of chapters) {
+  if (
+    typeof chapter.id !== "string" ||
+    !chapter.id ||
+    chapterIds.has(chapter.id)
+  )
+    throw new Error("Chapters need unique string IDs.");
+  chapterIds.add(chapter.id);
+  if (
+    !chapter.title ||
+    !Array.isArray(chapter.intro) ||
+    !Array.isArray(chapter.nodes) ||
+    !chapter.nodes.length
+  )
+    throw new Error(`Incomplete chapter: ${chapter.id}`);
+  const unknownNodes = chapter.nodes.filter((id) => !nodeIds.has(id));
+  if (unknownNodes.length)
+    throw new Error(
+      `Chapter ${chapter.id} references unknown nodes: ${unknownNodes.join(", ")}`,
+    );
+}
 const highlighter = await createHighlighter({
   themes: ["github-light"],
   langs: [

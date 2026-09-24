@@ -1,4 +1,5 @@
 import { filterMap } from "./map-filter.js";
+import { selectChapter } from "./chapters.js";
 import { inspectorPane } from "./inspector-pane.js";
 import { mountMap } from "./flow.jsx";
 import "./style.css";
@@ -22,11 +23,11 @@ const codeManifest = await fetch(
   `./code-data/manifest.json?v=${data.headRefOid}`,
 ).then((response) => response.json());
 const sourceCache = new Map();
-const map = await fetch(`./map.json?v=${data.headRefOid}`, {
+const fullMap = await fetch(`./map.json?v=${data.headRefOid}`, {
   cache: "no-store",
 }).then((response) => response.json());
-const nodes = map.nodes;
-if (map.headRefOid !== data.headRefOid)
+const nodes = fullMap.nodes;
+if (fullMap.headRefOid !== data.headRefOid)
   throw new Error(
     "The map does not match the PR snapshot. Update map.json and rebuild the source data.",
   );
@@ -41,6 +42,13 @@ nodes.forEach((node) => {
         : "modified"
     : "context";
 });
+const {
+  chapters,
+  index: chapterIndex,
+  chapter,
+  steps,
+  map,
+} = selectChapter(fullMap, new URLSearchParams(location.search).get("chapter"));
 $("#pr-title").textContent = `${data.repository} / #${data.number}`;
 $("#pr-title").title = `${data.title} · ${data.headRefOid.slice(0, 7)}`;
 $("#pr-link").href = data.url;
@@ -60,7 +68,7 @@ async function renderInspector() {
   const node = selectedNode;
   const path = selectedPath;
   $("#inspector-summary").innerHTML =
-    `<span class="eyebrow">${escapeHtml(node?.kind || "CHANGED FILE")}</span><h2>${escapeHtml(node?.title || path?.split("/").pop() || "Context")}</h2><div class="filepath">${escapeHtml(path || "Contextual entry point · no file diff")}</div>${node?.summary ? `<div class="behavior-summary"><p>${escapeHtml(node.summary)}</p></div>` : ""}`;
+    `${stepNav(node)}<span class="eyebrow">${escapeHtml(node?.kind || "CHANGED FILE")}</span><h2>${escapeHtml(node?.title || path?.split("/").pop() || "Context")}</h2><div class="filepath">${escapeHtml(path || "Contextual entry point · no file diff")}</div>${node?.summary ? `<div class="behavior-summary"><p>${escapeHtml(node.summary)}</p></div>` : ""}`;
   $("#source-link").href = path
     ? `https://github.com/${data.repository}/blob/${data.files.find((file) => file.path === path)?.changeType === "DELETED" ? data.mergeBaseOid : data.headRefOid}/${path.split("/").map(encodeURIComponent).join("/")}`
     : data.url;
@@ -122,6 +130,57 @@ async function renderInspector() {
         `<div class="code-empty">${escapeHtml(error.message)} Reopen the node to retry.</div>`;
   }
 }
+function stepNav(node) {
+  const step = steps.indexOf(node);
+  if (step === -1) return "";
+  return `<div class="step-nav"><button data-step="${step - 1}" ${step === 0 ? "disabled" : ""}>← Previous</button><span>Step ${step + 1} of ${steps.length}</span><button data-step="${step + 1}" ${step === steps.length - 1 ? "disabled" : ""}>Next →</button><button data-overview>Chapter overview</button></div>`;
+}
+function showOverview() {
+  renderRequest++;
+  selectedNode = null;
+  selectedPath = null;
+  pane.open();
+  $("#inspector").scrollTop = 0;
+  flow.select(null);
+  const intro = chapter.intro
+    .map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`)
+    .join("");
+  const stepList = steps
+    .map(
+      (node, step) =>
+        `<li><button data-step="${step}"><strong>${escapeHtml(node.title)}</strong><span>${escapeHtml(node.description || "")}</span></button></li>`,
+    )
+    .join("");
+  $("#inspector-summary").innerHTML =
+    `<span class="eyebrow">CHAPTER ${chapterIndex + 1} OF ${chapters.length}</span><h2>${escapeHtml(chapter.title)}</h2><div class="chapter-intro">${intro}</div><ol class="step-list">${stepList}</ol>`;
+  $("#code-controls").hidden = true;
+  $(".inspector-footer").hidden = true;
+  $("#inspector-content").innerHTML = "";
+  $("#status").textContent =
+    `Opened chapter ${chapterIndex + 1}: ${chapter.title}`;
+}
+function renderChapterNav() {
+  const options = [
+    { id: "", label: "Full map" },
+    ...chapters.map((item, index) => ({
+      id: item.id,
+      label: `${index + 1}. ${item.title}`,
+    })),
+  ];
+  const current = chapterIndex + 1;
+  const optionList = options
+    .map(
+      (option, index) =>
+        `<option value="${escapeHtml(option.id)}" ${index === current ? "selected" : ""}>${escapeHtml(option.label)}</option>`,
+    )
+    .join("");
+  $("#chapter-nav").innerHTML =
+    `<button data-chapter-id="${escapeHtml(options[current - 1]?.id ?? "")}" aria-label="Previous chapter" ${current === 0 ? "disabled" : ""}>←</button><select id="chapter-select" aria-label="Chapter">${optionList}</select><button data-chapter-id="${escapeHtml(options[current + 1]?.id ?? "")}" aria-label="Next chapter" ${current === options.length - 1 ? "disabled" : ""}>→</button>`;
+  $("#chapter-nav").hidden = false;
+}
+function openChapter(id) {
+  location.search = id ? `?chapter=${encodeURIComponent(id)}` : "";
+}
 function inspect(node) {
   selectedNode = node;
   selectedPath = node?.path || null;
@@ -146,6 +205,9 @@ $(".app").addEventListener("click", (event) => {
     codeMode = mode.dataset.codeMode;
     renderInspector();
   }
+  const step = event.target.closest("[data-step]");
+  if (step) inspect(steps[Number(step.dataset.step)]);
+  if (event.target.closest("[data-overview]")) showOverview();
   if (event.target.closest("[data-expand-context]")) {
     expandedContext = true;
     renderInspector();
@@ -154,6 +216,17 @@ $(".app").addEventListener("click", (event) => {
 $("#close-inspector").addEventListener("click", closeInspector);
 const flow = mountMap($("#viewport"), map, data.files, inspect);
 const pane = inspectorPane($("#graph-pane"), $("#inspector"));
+if (chapters.length) {
+  renderChapterNav();
+  $("#chapter-select").addEventListener("change", (event) =>
+    openChapter(event.target.value),
+  );
+  $("#chapter-nav").addEventListener("click", (event) => {
+    const button = event.target.closest("[data-chapter-id]");
+    if (button) openChapter(button.dataset.chapterId);
+  });
+}
+if (chapter) showOverview();
 $("#layer-filter").addEventListener("click", (event) => {
   const button = event.target.closest("[data-layer]");
   if (!button) return;

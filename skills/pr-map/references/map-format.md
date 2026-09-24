@@ -1,6 +1,6 @@
 # Map format
 
-Save `map.json` beside `pr-data.json` in the generated viewer directory. The map contains nodes and their connections. React Flow and Dagre calculate the layout. The snapshot and source builder supply file contents and diffs.
+Save `map.json` beside `pr-data.json` in the generated viewer directory. The map contains nodes, their connections, and chapters that group them into reviewable flows. React Flow and Dagre calculate the layout. The snapshot and source builder supply file contents and diffs.
 
 The example uses invented names. Replace its commit ID, file paths, and methods with the pinned PR source.
 
@@ -36,6 +36,17 @@ The example uses invented names. Replace its commit ID, file paths, and methods 
       "label": "request",
       "async": false
     }
+  ],
+  "chapters": [
+    {
+      "id": "create-post",
+      "title": "Create a post from the API",
+      "intro": [
+        "An authenticated API request creates a post and returns it as JSON.",
+        "The controller now delegates creation to an action instead of saving the model itself."
+      ],
+      "nodes": ["request", "controller"]
+    }
   ]
 }
 ```
@@ -57,6 +68,16 @@ Node IDs must be unique. `file` is an exact repository-relative path. Omit it fo
 The same file can appear in multiple nodes with different methods. For example, give an action's `execute` path and its `restore` path separate nodes when their callers differ.
 
 Descriptions are short card captions. Summaries appear above the code. Source code, titles, descriptions, and labels render as escaped text. Edges connect `from` and `to` node IDs; Dagre calculates their paths and label positions. `async` draws a dashed edge for queued or indirect data movement. Keep its label precise about what the edge represents.
+
+## Chapters
+
+`chapters` is an optional top-level array of 1-10 chapters. Generated maps should always include it. Each chapter has a unique `id`, a `title`, an `intro` array of 1-3 short paragraphs, and a `nodes` array of node IDs.
+
+List `nodes` in reading order, entry point first. A node can appear in several chapters. A chapter shows only its own nodes and the edges whose endpoints are both in that chapter. Add conceptual nodes, such as data stores or external systems, when a chapter needs them to make sense. Aim for about 5-10 nodes per chapter.
+
+Write the intro from the source: what the flow does, what changed and why, and links to related chapters, such as "see chapter 3".
+
+The viewer opens the full map, which is the first option in the chapter select. `?chapter=<id>` opens a chapter. The build rejects more than 10 chapters, duplicate chapter IDs, and unknown node IDs.
 
 ## Explicit method ranges
 

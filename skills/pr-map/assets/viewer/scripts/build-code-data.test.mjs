@@ -223,3 +223,26 @@ test("a stale revision or missing mapped method stops the build", async (t) => {
   await writeFile(join(output, "map.json"), JSON.stringify(map));
   assert.throws(() => build(output), /Mapped method not found/);
 });
+
+test("invalid chapters stop the build", async (t) => {
+  const { output, map } = await fixture(t);
+  const chapter = {
+    id: "work",
+    title: "Work",
+    intro: [],
+    nodes: ["caller", "worker"],
+  };
+  const writeChapters = (chapters) =>
+    writeFile(join(output, "map.json"), JSON.stringify({ ...map, chapters }));
+
+  await writeChapters([{ ...chapter, nodes: ["caller", "missing"] }]);
+  assert.throws(() => build(output), /unknown nodes: missing/);
+  await writeChapters([chapter, chapter]);
+  assert.throws(() => build(output), /unique string IDs/);
+  await writeChapters(
+    Array.from({ length: 11 }, (_, index) => ({ ...chapter, id: `c${index}` })),
+  );
+  assert.throws(() => build(output), /at most 10 chapters/);
+  await writeChapters([chapter]);
+  assert.doesNotThrow(() => build(output));
+});
