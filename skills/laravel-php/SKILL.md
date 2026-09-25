@@ -27,6 +27,10 @@ For every Laravel feature or package you use, consult its documentation through 
 - Installation alone does not establish the convention. Check existing endpoints and applicable project instructions.
 - Use a backed enum instead of plain strings for a fixed set of values, such as statuses, states, types, or reasons, that are passed between methods or classes, stored, or compared. Type parameters and properties with the enum, and cast model attributes to it. Reuse an existing enum before creating a new one.
 
+## Dependency injection
+
+- Inject dependencies through the constructor of services and actions, and into controller actions or job and command `handle()` methods that use them directly. Resolve dependencies with `app()` in the protected method that uses them instead of passing them through from an injected method.
+
 ## Write code that explains itself
 
 - Use method and variable names that describe the value or operation. Do not abbreviate: use `$expirationDate`, `$customer`, and `$exception`.
