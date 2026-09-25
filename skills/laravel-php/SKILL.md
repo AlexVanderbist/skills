@@ -25,6 +25,7 @@ For every Laravel feature or package you use, consult its documentation through 
 - If the project uses Laravel Data for controller input and validation, follow that pattern instead of introducing FormRequest classes.
 - If the project uses Laravel Data for controller responses, follow that pattern instead of introducing JSON resources.
 - Installation alone does not establish the convention. Check existing endpoints and applicable project instructions.
+- Use a backed enum instead of plain strings for a fixed set of values, such as statuses, states, types, or reasons, that are passed between methods or classes, stored, or compared. Type parameters and properties with the enum, and cast model attributes to it. Reuse an existing enum before creating a new one.
 
 ## Write code that explains itself
 
