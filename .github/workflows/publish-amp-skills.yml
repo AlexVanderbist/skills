@@ -1,0 +1,65 @@
+name: Publish Amp skills
+
+on:
+  pull_request:
+    paths:
+      - skills/**
+      - scripts/export-amp-skills.py
+      - .github/workflows/publish-amp-skills.yml
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: amp-skills-${{ github.event_name == 'pull_request' && github.ref || 'publish' }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Validate exported skills
+        run: |
+          mkdir "$RUNNER_TEMP/amp-export"
+          python3 scripts/export-amp-skills.py "$RUNNER_TEMP/amp-export"
+
+  publish:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: validate
+    runs-on: ubuntu-latest
+    environment: amp-skills
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install Amp CLI
+        run: |
+          curl -fsSL https://ampcode.com/install.sh | bash
+          echo "$HOME/.amp/bin" >> "$GITHUB_PATH"
+      - name: Publish to personal skills
+        env:
+          AMP_API_KEY: ${{ secrets.AMP_API_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "$AMP_API_KEY" || { echo 'Set the AMP_API_KEY environment secret first.'; exit 1; }
+          latest=$(git ls-remote https://github.com/alexvanderbist/skills.git refs/heads/main | cut -f1)
+          test "$latest" = "$GITHUB_SHA" || { echo 'A newer main revision exists; skip this publication.'; exit 0; }
+          target="$RUNNER_TEMP/amp-skills"
+          amp clone alexv/-/skills "$target"
+          python3 scripts/export-amp-skills.py "$target"
+          git -C "$target" config user.name 'github-actions[bot]'
+          git -C "$target" config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git -C "$target" add --all
+          git -C "$target" diff --cached --check
+          if git -C "$target" diff --cached --quiet; then
+            echo 'Hosted skills are already current.'
+            exit 0
+          fi
+          git -C "$target" commit -m "Update skills from ${GITHUB_SHA}"
+          git -C "$target" push origin HEAD:main

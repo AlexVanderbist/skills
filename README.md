@@ -29,6 +29,28 @@ npx skills add AlexVanderbist/skills -g -a codex claude-code
 
 Remove or disable overlapping skills, such as the original Spatie guideline skills, before using these replacements. Loading both can introduce conflicting or duplicate instructions.
 
+### Publish to Amp
+
+`skills/` remains the source of truth. The `Publish Amp skills` workflow validates exports on pull requests and publishes changes on `main` to the hosted personal repository `alexv/-/skills`. It can also be run manually from `main`.
+
+Before enabling publication:
+
+1. Create a GitHub Actions environment named `amp-skills`. Add a required reviewer if publication should need approval, and restrict deployment branches to `main`.
+2. Create an Amp access token in Amp's Security settings and store it as the environment secret `AMP_API_KEY`. Use private secret inputs, never a committed file. The token must authenticate as the owner of `alexv/-/skills` and permit Git writes.
+3. Run the workflow manually to verify authentication before relying on automatic publication.
+
+The exporter preserves bundled text files and lockfiles, validates hosted limits, adds manual-only descriptions for `orchestrate`, `review-pr`, and `simplify`, and adds portal guidance for `pr-map`. A changed portal instruction that no longer matches the adaptation stops publication for review.
+
+Published skill directories are generated and will be overwritten from GitHub. A source manifest records their names and revision so removed source skills are removed from Amp on the next publication. Unrelated hosted skills are preserved. Do not edit generated copies directly. Publishing uses normal Git pushes, never force pushes; concurrent changes to the hosted repository cause a push failure rather than being overwritten.
+
+For a local preview with Python 3, create an empty directory outside this repository and run:
+
+```bash
+python3 scripts/export-amp-skills.py /absolute/path/to/empty-directory
+```
+
+The command only exports files. It does not commit or push. Skill changes must be committed first so the recorded source revision identifies the published content. Local publication can use the same command against a clean checkout created with `amp clone alexv/-/skills`, followed by reviewing, committing, and pushing that checkout.
+
 ### Optional: load guidance before planning
 
 After installing the skills, add this snippet to your global `~/.codex/AGENTS.md` and `~/.claude/CLAUDE.md`. If those files share a symlink target, edit it only once. This makes the timing explicit rather than relying only on automatic skill selection. Project instruction files can record project-specific exceptions.
